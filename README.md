@@ -14,13 +14,13 @@ in order to provide details of your network and MQTT server
 The BME280 is connected via I2C connectivity.  So, typically should
 be wired as
 
-BME280   ESP8266
-======   =======
-   VIN---3.3V
-   GND---GND
-   SCL---D1 (GPIO5)
-   SDA---D2 (GPIO6)
-
+    BME280   ESP8266
+    ======   =======
+       VIN---3.3V
+       GND---GND
+       SCL---D1 (GPIO5)
+       SDA---D2 (GPIO6)
+    
 The D1/D2 ports on the ESP8266 are hardware managed I2C, so work faster
 
 The MQTT channels are based off the word "bme280" and the last 6 digits of the MAC
