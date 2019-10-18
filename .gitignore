@@ -1,0 +1,7 @@
+network_conn.h
+Makefile
+esp8266-bme280.esp8266.esp8266.nodemcuv2.bin
+esp8266-bme280.esp8266.esp8266.nodemcuv2.elf
+build
+cache
+dummy
