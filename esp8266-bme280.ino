@@ -46,6 +46,7 @@ char mqttTempF[30];
 char mqttPressure[30];
 char mqttPressureHg[30];
 char mqttHumidity[30];
+char mqttDebug[30];
 
 WiFiClient espClient;
 PubSubClient client(espClient);
@@ -59,6 +60,7 @@ void log_msg(String msg)
   tm.trim();
   tm = tm + ": " + msg;
   Serial.println(tm);
+  client.publish(mqttDebug,tm.c_str());
 }
 
 void setup() {
@@ -103,6 +105,7 @@ void setup() {
   sprintf(mqttPressure,   "%s/%s/pressure",   _mqttBase, macstr);
   sprintf(mqttPressureHg, "%s/%s/pressurehg", _mqttBase, macstr);
   sprintf(mqttHumidity,   "%s/%s/humidity",   _mqttBase, macstr);
+  sprintf(mqttDebug   ,   "%s/%s/debug",      _mqttBase, macstr);
 
   delay(500);
 
@@ -194,12 +197,20 @@ char *ftoa(float f)
   return buf;
 }
 
-// Only report data if these values change
-float oldc=-1.0;
-float oldf=-1.0;
-float oldp=-1.0;
-float oldphg=-1.0;
-float oldh=-1.0;
+void do_publish(char *channel, float newval)
+{
+  // Sanity check to ensure values aren't toooo out of range
+  // tempC and tempF may go negative, but not _too_ negative.
+  // pressure is over 1000, but never 2000
+  if (newval > -100 && newval < 2000)
+  {
+    client.publish(channel, ftoa(newval), true);
+  }
+  else
+  {
+    log_msg("Skipping bad value for " + String(channel) + " " + String(ftoa(newval)));
+  }
+}
 
 void read_and_send_data()
 {
@@ -214,9 +225,9 @@ void read_and_send_data()
 
   float h=do_round(bme.readHumidity());
 
-  if (c != oldc) { client.publish(mqttTempC, ftoa(c),true); oldc=c; }
-  if (f != oldf) { client.publish(mqttTempF, ftoa(f),true); oldf=f; }
-  if (p != oldp) { client.publish(mqttPressure, ftoa(p),true); oldp=p; }
-  if (phg != oldphg) { client.publish(mqttPressureHg, ftoa(phg),true); oldphg=phg; }
-  if (h != oldh) { client.publish(mqttHumidity, ftoa(h),true); oldh=h; }
+  do_publish(mqttTempC, c);
+  do_publish(mqttTempF, f);
+  do_publish(mqttPressure, p);
+  do_publish(mqttPressureHg, phg);
+  do_publish(mqttHumidity, h);
 }
