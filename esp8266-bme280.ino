@@ -190,25 +190,30 @@ float do_round(float f)
   return 0.1*int(f*10.0);
 }
 
-char buf[12];
-char *ftoa(float f)
+float do_round2(float f)
 {
-  dtostrf(f,10,1,buf);
+  return 0.01*int(f*100.0);
+}
+
+char buf[12];
+char *ftoa(float f,int dp)
+{
+  dtostrf(f,10,dp,buf);
   return buf;
 }
 
-void do_publish(char *channel, float newval)
+void do_publish(char *channel, float newval, int dp)
 {
   // Sanity check to ensure values aren't toooo out of range
   // tempC and tempF may go negative, but not _too_ negative.
   // pressure is over 1000, but never 2000
   if (newval > -100 && newval < 2000)
   {
-    client.publish(channel, ftoa(newval), true);
+    client.publish(channel, ftoa(newval,dp), true);
   }
   else
   {
-    log_msg("Skipping bad value for " + String(channel) + " " + String(ftoa(newval)));
+    log_msg("Skipping bad value for " + String(channel) + " " + String(ftoa(newval,dp)));
   }
 }
 
@@ -220,14 +225,14 @@ void read_and_send_data()
   c=do_round(c);
 
   float p=bme.readPressure()/100.0;
-  float phg=do_round(p*0.02953);
+  float phg=do_round2(p*0.029529983071445);
   p=do_round(p);
 
   float h=do_round(bme.readHumidity());
 
-  do_publish(mqttTempC, c);
-  do_publish(mqttTempF, f);
-  do_publish(mqttPressure, p);
-  do_publish(mqttPressureHg, phg);
-  do_publish(mqttHumidity, h);
+  do_publish(mqttTempC, c, 1);
+  do_publish(mqttTempF, f, 1);
+  do_publish(mqttPressure, p, 1);
+  do_publish(mqttPressureHg, phg, 2);
+  do_publish(mqttHumidity, h, 1);
 }
