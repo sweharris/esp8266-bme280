@@ -190,9 +190,9 @@ float do_round(float f)
   return 0.1*int(f*10.0);
 }
 
-float do_round2(float f)
+float do_round3(float f)
 {
-  return 0.01*int(f*100.0);
+  return 0.001*int(f*1000.0);
 }
 
 char buf[12];
@@ -225,7 +225,7 @@ void read_and_send_data()
   c=do_round(c);
 
   float p=bme.readPressure()/100.0;
-  float phg=do_round2(p*0.029529983071445);
+  float phg=do_round3(p*0.029529983071445);
   p=do_round(p);
 
   float h=do_round(bme.readHumidity());
@@ -233,6 +233,6 @@ void read_and_send_data()
   do_publish(mqttTempC, c, 1);
   do_publish(mqttTempF, f, 1);
   do_publish(mqttPressure, p, 1);
-  do_publish(mqttPressureHg, phg, 2);
+  do_publish(mqttPressureHg, phg, 3);
   do_publish(mqttHumidity, h, 1);
 }
