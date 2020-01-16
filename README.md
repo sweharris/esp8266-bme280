@@ -16,12 +16,13 @@ be wired as
 
     BME280   ESP8266
     ======   =======
-       VIN---3.3V
+       VIN---3.3V or 5V
        GND---GND
-       SCL---D1 (GPIO5)
-       SDA---D2 (GPIO6)
+       SCL---D4 (GPIO2)
+       SDA---D3 (GPIO0)
     
-The D1/D2 ports on the ESP8266 are hardware managed I2C, so work faster
+These are mapped this way because the BME board I've got can be soldered
+directly to a D1-Mini without any cables, but it also works with a NodeMCU
 
 The MQTT channels are based off the word "bme280" and the last 6 digits of the MAC
    

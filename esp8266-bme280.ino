@@ -13,10 +13,10 @@
 // On my NodeMCU
 //    BME280   ESP8266
 //    ======   =======
-//       VIN---3.3V
+//       VIN---3.3V or 5V
 //       GND---GND
-//       SCL---D1 (GPIO5)
-//       SDA---D2 (GPIO6)
+//       SCL---D4 (GPIO2)
+//       SDA---D3 (GPIO0)
 //
 // GPL2.0 or later.  See GPL LICENSE file for details.
 // Original code by Stephen Harris, Sep 2019
@@ -68,6 +68,7 @@ void setup() {
 
   unsigned status;
     
+  Wire.begin(D3,D4);
   status = bme.begin();  
 
   // This test taken almost verbatin from the bme820 example code
