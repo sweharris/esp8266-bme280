@@ -92,16 +92,17 @@ void setup() {
   }
     
   // Set up the BME280 to reduce oversampling to "4" (it defaults to 16)
-  // and apply a small smoothing curve.  Add a bit of sleep between
-  // samples.  This should reduce power draw, so reduce thermal induced
+  // and apply a small smoothing curve.
+  // We go into forced mode.
+  // This should reduce power draw, so reduce thermal induced
   // error, and make numbers more stable
 
-  bme.setSampling(Adafruit_BME280::MODE_NORMAL,
+  bme.setSampling(Adafruit_BME280::MODE_FORCED,
                   Adafruit_BME280::SAMPLING_X4,  // temperature
                   Adafruit_BME280::SAMPLING_X4, // pressure
                   Adafruit_BME280::SAMPLING_X4,  // humidity
                   Adafruit_BME280::FILTER_X16,
-                  Adafruit_BME280::STANDBY_MS_0_5 );
+                  Adafruit_BME280::STANDBY_MS_1000 );
 
   // Let's create the channel names based on the MAC address
   unsigned char mac[6];
@@ -228,6 +229,9 @@ void do_publish(char *channel, float newval, int dp)
 
 void read_and_send_data()
 {
+  // Force the BME to take a reading
+  bme.takeForcedMeasurement();
+
   // Get current values to 0.1
   float c=bme.readTemperature();
   float f=do_round(c*1.8+32.0);
