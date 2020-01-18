@@ -1,12 +1,12 @@
-// This code uses a BME820 in I2C mode to read the current values and
+// This code uses a BME280 in I2C mode to read the current values and
 // publish them to a MQTT server.  It's pretty simple.
 //
-// The MQTT channels are based off the word "bme820" and the last 6 digits
+// The MQTT channels are based off the word "bme280" and the last 6 digits
 // of the MAC, followed by "temp", "pressure", "humidity"
 //
-// eg bme820/123456/temp (in celcius)
-//    bme820/123456/pressure (in hPa)
-//    bme820/123456/humidity (in %)
+// eg bme280/123456/temp (in celcius)
+//    bme280/123456/pressure (in hPa)
+//    bme280/123456/humidity (in %)
 //
 // Uses PubSubClient library on top of the ESP8266WiFi one
 //
@@ -24,7 +24,7 @@
 // Set this to 1 if you want log messages on the serial port
 // This may cause LEDs to blink (eg on NodeMCU which is tied to Tx)
 // so could be annoying in a dark room.   It's not needed to function.
-// We still send boot error messages (eg can't connect to bme820)
+// We still send boot error messages (eg can't connect to bme280)
 #define SERIAL_OUTPUT 0
 
 #include <ESP8266WiFi.h>
@@ -42,7 +42,7 @@
 
 #include "network_conn.h"
 
-#define _mqttBase    "bme820"
+#define _mqttBase    "bme280"
 
 // How many seconds between sampling
 #define sample_time 30
@@ -79,7 +79,7 @@ void setup() {
   Wire.begin(D3,D4);
   status = bme.begin();  
 
-  // This test taken almost verbatin from the bme820 example code
+  // This test taken almost verbatin from the bme280 example code
   if (!status)
   {
     Serial.println("Could not find a valid BME280 sensor, check wiring, address, sensor ID!");
@@ -91,7 +91,7 @@ void setup() {
     while (1);
   }
     
-  // Set up the BME820 to reduce oversampling to "4" (it defaults to 16)
+  // Set up the BME280 to reduce oversampling to "4" (it defaults to 16)
   // and apply a small smoothing curve.  Add a bit of sleep between
   // samples.  This should reduce power draw, so reduce thermal induced
   // error, and make numbers more stable
@@ -167,7 +167,7 @@ void loop() {
     log_msg("Connecting to MQTT Server " + String(mqttServer));
 
     // Generate a random ID each time
-    String clientId = "ESP8266Client-bme820-";
+    String clientId = "ESP8266Client-bme280-";
     clientId += String(random(0xffff), HEX);
 
     if (client.connect(clientId.c_str())) {
