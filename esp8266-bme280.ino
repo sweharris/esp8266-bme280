@@ -21,12 +21,6 @@
 // GPL2.0 or later.  See GPL LICENSE file for details.
 // Original code by Stephen Harris, Sep 2019
 
-// Set this to 1 if you want log messages on the serial port
-// This may cause LEDs to blink (eg on NodeMCU which is tied to Tx)
-// so could be annoying in a dark room.   It's not needed to function.
-// We still send boot error messages (eg can't connect to bme280)
-#define SERIAL_OUTPUT 0
-
 #include <ESP8266WiFi.h>
 #include <PubSubClient.h>
 #include <Wire.h>
@@ -65,9 +59,7 @@ void log_msg(String msg)
   String tm = ctime(&now);
   tm.trim();
   tm = tm + ": " + msg;
-#if SERIAL_OUTPUT
   Serial.println(tm);
-#endif
   client.publish(mqttDebug,tm.c_str());
 }
 
