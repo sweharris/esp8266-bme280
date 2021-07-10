@@ -1,3 +1,4 @@
 network_conn.h
 *.bin
 *.elf
+*.map
