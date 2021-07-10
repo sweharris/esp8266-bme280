@@ -6,12 +6,12 @@ BOARD=esp8266:esp8266:nodemcuv2
 SRC = $(wildcard *.ino)
 PROJECT = $(notdir $(CURDIR))
 
-TARGET = $(PROJECT).$(subst :,.,$(BOARD)).bin
+TARGET = $(PROJECT).ino.bin
 
 $(TARGET): $(SRC)
 	@rm -rf tmp
 	@mkdir -p tmp
-	@TMPDIR=$(PWD)/tmp arduino-cli compile --fqbn=$(BOARD)
+	@TMPDIR=$(PWD)/tmp arduino-cli compile --fqbn=$(BOARD) --output-dir=$(PWD)
 	@rm -rf tmp
 
 recompile: $(TARGET)
@@ -25,7 +25,7 @@ endif
 
 upload:
 	@mkdir -p tmp
-	@TMPDIR=$(PWD)/tmp arduino-cli upload --fqbn=$(BOARD) -p $(PORT)
+	@TMPDIR=$(PWD)/tmp arduino-cli upload --fqbn=$(BOARD) -p $(PORT) --input-dir=$(PWD)
 	@rm -rf tmp
 
 serial:
